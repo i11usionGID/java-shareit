@@ -31,7 +31,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Item updateItem(ItemDto itemDto, Long userId, Long itemId) {
-        if (itemStorage.getById(itemId).getOwner().getId() != userId) {
+        if (!itemStorage.getById(itemId).getOwner().getId().equals(userId)) {
             throw new WrongOwnerException("Wrong user id");
         }
         if (userId == null || itemId == null) {

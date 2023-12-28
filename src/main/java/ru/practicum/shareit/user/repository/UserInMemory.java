@@ -29,7 +29,7 @@ public class UserInMemory implements UserStorage {
     public User update(User user) {
         int count = 0;
         for (User users: users.values()) {
-            if (users.getEmail().equals(user.getEmail()) && users.getId() != user.getId()) {
+            if (users.getEmail().equals(user.getEmail()) && !users.getId().equals(user.getId())) {
                 count++;
             }
         }
