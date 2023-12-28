@@ -14,6 +14,7 @@ public class ItemInMemory implements ItemStorage {
 
     private Map<Long, Item> items = new HashMap<>();
     private Long id = 1L;
+
     @Override
     public Item create(Item item) {
         item.setId(id++);

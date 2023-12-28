@@ -18,11 +18,13 @@ import java.util.stream.Collectors;
 public class UserController {
 
     private final UserService service;
+
     @PostMapping
     public UserDto createUser(@Valid @RequestBody UserDto request) {
         User user = UserMapper.toUser(request);
         return UserMapper.toDto(service.createUser(user));
     }
+
     @PatchMapping("/{userId}")
     public UserDto updateUser(@RequestBody UserDto request,
                                    @PathVariable(value = "userId") Long id) {

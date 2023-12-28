@@ -13,6 +13,7 @@ public class ItemMapper {
                 .available(itemDto.getAvailable())
                 .build();
     }
+
     public static ItemDto toDto(Item item) {
         return ItemDto.builder()
                 .id(item.getId())

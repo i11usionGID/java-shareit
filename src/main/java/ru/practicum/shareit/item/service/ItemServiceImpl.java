@@ -19,6 +19,7 @@ public class ItemServiceImpl implements ItemService {
 
     private final ItemStorage itemStorage;
     private final UserStorage userStorage;
+
     @Override
     public Item createItem(ItemDto itemDto, Long userId) {
         if (userId == null) {

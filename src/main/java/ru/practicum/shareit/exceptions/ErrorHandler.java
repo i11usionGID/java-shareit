@@ -11,19 +11,19 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse DataAlreadyExistException(final DataAlreadyExistException e) {
+    public ErrorResponse dataAlreadyExistException(final DataAlreadyExistException e) {
         return new ErrorResponse(e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse DataNotFoundException(final DataNotFoundException e) {
+    public ErrorResponse dataNotFoundException(final DataNotFoundException e) {
         return new ErrorResponse(e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse WrongOwnerException(final WrongOwnerException e) {
+    public ErrorResponse wrongOwnerException(final WrongOwnerException e) {
         return new ErrorResponse(e.getMessage());
     }
 }
