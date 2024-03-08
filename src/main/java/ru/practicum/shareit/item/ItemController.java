@@ -1,10 +1,12 @@
-package ru.practicum.shareit.item.controller;
+package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.item.comment.CommentDto;
+import ru.practicum.shareit.item.comment.CommentDtoRequest;
+import ru.practicum.shareit.item.comment.CommentMapper;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.mapper.ItemMapper;
-import ru.practicum.shareit.item.service.ItemService;
+import ru.practicum.shareit.item.dto.ItemWithBookingAndComments;
 
 import javax.validation.Valid;
 import java.util.Collection;
@@ -23,6 +25,12 @@ public class ItemController {
         return ItemMapper.toDto(service.createItem(itemDto, userId));
     }
 
+    @PostMapping("/{itemId}/comment")
+    public CommentDto createComment(@Valid @RequestBody CommentDtoRequest comment, @RequestHeader(header) Long userId,
+                                    @PathVariable(value = "itemId") Long itemId) {
+        return CommentMapper.toDto(service.createComment(comment, userId, itemId));
+    }
+
     @PatchMapping("/{itemId}")
     public ItemDto updateItem(@RequestBody ItemDto itemDto, @RequestHeader(header) Long userId,
                               @PathVariable(value = "itemId") Long itemId) {
@@ -30,15 +38,13 @@ public class ItemController {
     }
 
     @GetMapping("/{itemId}")
-    public ItemDto getItemById(@RequestHeader(header) Long userId, @PathVariable(value = "itemId") Long itemId) {
-        return ItemMapper.toDto(service.getItemById(itemId, userId));
+    public ItemWithBookingAndComments getItemById(@RequestHeader(header) Long userId, @PathVariable(value = "itemId") Long itemId) {
+        return service.getItemById(itemId, userId);
     }
 
     @GetMapping
-    public Collection<ItemDto> getAllItemsByUser(@RequestHeader(header) Long userId) {
-        return service.getAllItemsByUser(userId).stream()
-                .map(s1 -> ItemMapper.toDto(s1))
-                .collect(Collectors.toList());
+    public Collection<ItemWithBookingAndComments> getAllItemsByUser(@RequestHeader(header) Long userId) {
+        return service.getAllItemsByUser(userId);
     }
 
     @GetMapping("/search")
