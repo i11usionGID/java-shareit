@@ -29,7 +29,7 @@ public class BookingServiceImpl implements BookingService {
         User user = userService.getUserById(userId);
         Item item = itemRepository.findById(bookingDto.getItemId())
                 .orElseThrow(() -> new DataNotFoundException("Предмета с таким id = " + bookingDto.getItemId() + " не существует."));
-        if (userId == item.getOwner().getId())
+        if (userId.equals(item.getOwner().getId()))
             throw new SelfBookingException("Владелец не может забронировать вещь сам у себя.");
         if (!item.getAvailable()) {
             throw new UnavailableItemException("К сожалению, вещь недоступна для бронирования.");
@@ -42,7 +42,7 @@ public class BookingServiceImpl implements BookingService {
         checkUser(userId);
         Booking booking = repository.findById(bookingId)
                 .orElseThrow(() -> new DataNotFoundException("Бронирования с таким id = " + bookingId + " не существует."));
-        if (userId != booking.getItem().getOwner().getId()) {
+        if (!userId.equals(booking.getItem().getOwner().getId())) {
             throw new WrongOwnerException("Статус бронирования может поменять только владелец.");
         }
         if (approved) {
@@ -63,7 +63,7 @@ public class BookingServiceImpl implements BookingService {
         Booking booking = repository.findById(id)
                 .orElseThrow(() -> new DataNotFoundException("Бронирования с таким id = " + id + " не существует."));
         Item item = booking.getItem();
-        if (userId != item.getOwner().getId() && userId != booking.getBooker().getId()) {
+        if (!userId.equals(item.getOwner().getId()) && !userId.equals(booking.getBooker().getId())) {
             throw new WrongOwnerException("Просматривать информацию могут только участники бронирования");
         }
         return booking;
