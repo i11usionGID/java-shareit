@@ -5,6 +5,8 @@ import lombok.NoArgsConstructor;
 import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.user.User;
 
+import java.time.LocalDateTime;
+
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CommentMapper {
     public static Comment toComment(CommentDtoRequest request, User author, Item item) {
@@ -12,6 +14,7 @@ public class CommentMapper {
                 .text(request.getText())
                 .author(author)
                 .item(item)
+                .created(LocalDateTime.now())
                 .build();
     }
 
@@ -20,6 +23,7 @@ public class CommentMapper {
                 .text(comment.getText())
                 .id(comment.getId())
                 .authorName(comment.getAuthor().getName())
+                .created(comment.getCreated())
                 .build();
     }
 }

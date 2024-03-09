@@ -34,6 +34,7 @@ CREATE TABLE IF NOT EXISTS comments (
  text varchar(2048),
  item_id BIGINT REFERENCES items(id),
  author_id BIGINT REFERENCES users(id),
+ created TIMESTAMP,
  FOREIGN KEY (item_id) REFERENCES items(id),
  FOREIGN KEY (author_id) REFERENCES users(id)
 );
