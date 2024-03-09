@@ -43,7 +43,7 @@ public class ItemServiceImpl implements ItemService {
     public Item updateItem(ItemDto itemDto, Long userId, Long itemId) {
         Item oldItem = repository.findById(itemId)
                         .orElseThrow(() -> new DataNotFoundException("Предмета с таким id = " + itemId + " не существует."));
-        if (oldItem.getOwner().getId() != userId) {
+        if (!oldItem.getOwner().getId().equals(userId)) {
             throw new WrongOwnerException("Только владелец может менять данные о предмете!");
         }
         User user = userService.getUserById(userId);
@@ -120,18 +120,14 @@ public class ItemServiceImpl implements ItemService {
         if (lastBooking != null) {
             if (lastBooking.getStatus() != Status.REJECTED) {
                 last = BookingMapper.toShort(lastBooking);
-            } else {
-                last = null;
             }
         }
         if (nextBooking != null) {
             if (nextBooking.getStatus() != Status.REJECTED) {
                 next = BookingMapper.toShort(nextBooking);
-            } else {
-                next = null;
             }
         }
-        if (userId != item.getOwner().getId()) {
+        if (!userId.equals(item.getOwner().getId())) {
             last = null;
             next = null;
         }
