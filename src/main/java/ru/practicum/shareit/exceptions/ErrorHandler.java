@@ -32,4 +32,39 @@ public class ErrorHandler {
         log.info("Попытка изменения объектов, не принадлежащих пользователю.");
         return new ErrorResponse(e.getMessage());
     }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse wrongDateException(final WrongDateException e) {
+        log.info("Неправильная дата бронирования.");
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse selfBookingException(final SelfBookingException e) {
+        log.info("Попытка забронировать свою вещь.");
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse unavailableItemException(final UnavailableItemException e) {
+        log.info("Попытка забронировать недоступный предмет.");
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse statusAlreadyApprovedException(final StatusAlreadyApprovedException e) {
+        log.info("Попытка подтвердить уже подтвержденное бронирование.");
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse wrongAuthorException(final WrongAuthorException e) {
+        log.info("Попытка оставить комментарий без бронирования.");
+        return new ErrorResponse(e.getMessage());
+    }
 }
