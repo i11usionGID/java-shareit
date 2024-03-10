@@ -16,6 +16,7 @@ import ru.practicum.shareit.item.dto.ItemWithBookingAndComments;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserService;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -32,6 +33,7 @@ public class ItemServiceImpl implements ItemService {
     private final CommentRepository commentRepository;
 
     @Override
+    @Transactional
     public Item createItem(ItemDto itemDto, Long userId) {
         checkUserExist(userId);
         User user = userService.getUserById(userId);
@@ -40,6 +42,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional
     public Item updateItem(ItemDto itemDto, Long userId, Long itemId) {
         Item oldItem = repository.findById(itemId)
                         .orElseThrow(() -> new DataNotFoundException("Предмета с таким id = " + itemId + " не существует."));
@@ -90,6 +93,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional
     public Comment createComment(CommentDtoRequest comment, Long authorId, Long itemId) {
         checkUserExist(authorId);
         Item item = repository.findById(itemId)
@@ -117,15 +121,11 @@ public class ItemServiceImpl implements ItemService {
         Booking nextBooking = bookingRepository.findFirstByItemIdAndStartIsAfterOrderByStart(item.getId(), now);
         BookingShort last = null;
         BookingShort next = null;
-        if (lastBooking != null) {
-            if (lastBooking.getStatus() != Status.REJECTED) {
-                last = BookingMapper.toShort(lastBooking);
-            }
+        if (lastBooking != null && lastBooking.getStatus() != Status.REJECTED) {
+            last = BookingMapper.toShort(lastBooking);
         }
-        if (nextBooking != null) {
-            if (nextBooking.getStatus() != Status.REJECTED) {
-                next = BookingMapper.toShort(nextBooking);
-            }
+        if (nextBooking != null && nextBooking.getStatus() != Status.REJECTED) {
+            next = BookingMapper.toShort(nextBooking);
         }
         if (!userId.equals(item.getOwner().getId())) {
             last = null;

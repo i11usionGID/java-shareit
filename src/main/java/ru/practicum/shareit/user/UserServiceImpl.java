@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exceptions.DataNotFoundException;
 
+import javax.transaction.Transactional;
 import java.util.Collection;
 
 
@@ -13,11 +14,13 @@ public class UserServiceImpl implements UserService {
     private final UserRepository repository;
 
     @Override
+    @Transactional
     public User createUser(User user) {
         return repository.save(user);
     }
 
     @Override
+    @Transactional
     public User updateUser(User user) {
         checkUserExist(user.getId());
         User oldUser = getUserById(user.getId());
@@ -43,6 +46,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void deleteUser(Long userId) {
         repository.deleteById(userId);
     }

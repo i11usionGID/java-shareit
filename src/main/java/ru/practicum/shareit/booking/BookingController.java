@@ -14,29 +14,29 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class BookingController {
 
-    private static final String header = "X-Sharer-User-Id";
+    public static final String HEADER = "X-Sharer-User-Id";
 
     private final BookingService service;
 
     @PostMapping
     public BookingDtoResponse createBooking(@Valid @RequestBody BookingDtoRequest requestBooking,
-                                            @RequestHeader(header) Long userId) {
+                                            @RequestHeader(HEADER) Long userId) {
         return BookingMapper.toResponse(service.createBooking(requestBooking, userId));
     }
 
     @PatchMapping("/{bookingId}")
-    public BookingDtoResponse changeStatus(@PathVariable Long bookingId, @RequestHeader(header) Long userId,
+    public BookingDtoResponse changeStatus(@PathVariable Long bookingId, @RequestHeader(HEADER) Long userId,
                                            @RequestParam(name = "approved") Boolean approved) {
         return BookingMapper.toResponse(service.changeStatus(bookingId, userId, approved));
     }
 
     @GetMapping("/{bookingId}")
-    public BookingDtoResponse getBooking(@PathVariable Long bookingId, @RequestHeader(header) Long userId) {
+    public BookingDtoResponse getBooking(@PathVariable Long bookingId, @RequestHeader(HEADER) Long userId) {
         return BookingMapper.toResponse(service.getBooking(bookingId, userId));
     }
 
     @GetMapping
-    public List<BookingDtoResponse> getAllBookingsByUser(@RequestHeader(header) Long userId,
+    public List<BookingDtoResponse> getAllBookingsByUser(@RequestHeader(HEADER) Long userId,
                                                          @RequestParam(name = "state", defaultValue = "ALL") String state) {
         return service.getAllBookingsByUser(userId, state).stream()
                 .map(BookingMapper::toResponse)
@@ -44,7 +44,7 @@ public class BookingController {
     }
 
     @GetMapping("/owner")
-    public List<BookingDtoResponse> getAllBookingsItemsByOwner(@RequestHeader(header) Long userId,
+    public List<BookingDtoResponse> getAllBookingsItemsByOwner(@RequestHeader(HEADER) Long userId,
                                                                @RequestParam(name = "state", defaultValue = "ALL") String state) {
         return service.getAllBookingsItemsByOwner(userId, state).stream()
                 .map(BookingMapper::toResponse)
