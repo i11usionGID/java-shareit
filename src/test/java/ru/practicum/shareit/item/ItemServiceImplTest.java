@@ -90,7 +90,7 @@ class ItemServiceImplTest {
         when(itemRepository.save(ItemMapper.toItem(itemDto, user, itemRequest))).thenReturn(actualItem);
 
         Item itemReturn = itemService.createItem(itemDto, user.getId());
-        assertEquals(user.getId(), itemReturn.getOwner().getId(), "некорректно отработал метод");
+        assertEquals(user.getId(), itemReturn.getOwner().getId(), "метод отработал некорректно");
         assertEquals(itemRequest.getCreated(), itemReturn.getRequest().getCreated(), "метод отработал некорректно");
     }
 
@@ -135,7 +135,7 @@ class ItemServiceImplTest {
         when(userService.getUserById(user.getId())).thenReturn(user);
 
         Item updateItem = itemService.updateItem(itemDto, user.getId(), item.getId());
-        assertEquals(user.getEmail(), updateItem.getOwner().getEmail(), "некорректно отработал метод");
+        assertEquals(user.getEmail(), updateItem.getOwner().getEmail(), "метод отработал некорректно");
         verify(itemRepository, times(1)).save(ItemMapper.toItemWithId(itemDto, user, item.getId()));
     }
 
@@ -169,7 +169,7 @@ class ItemServiceImplTest {
 
         ItemWithBookingAndComments item1 = itemService.getItemById(item.getId(), user.getId());
         assertNotNull(item1);
-        assertEquals(item.getDescription(), item1.getDescription(), "некорректно отработал метод");
+        assertEquals(item.getDescription(), item1.getDescription(), "метод отработал некорректно");
         assertTrue(item1.getName().equals("мышь"));
     }
 
@@ -211,8 +211,8 @@ class ItemServiceImplTest {
         List<ItemWithBookingAndComments> item2 = (List<ItemWithBookingAndComments>)
                 itemService.getAllItemsByUser(user.getId(), 15, 10);
         assertFalse(item2.isEmpty());
-        assertEquals(1, item2.size(), "некорректно отработал метод");
-        assertEquals("игровая мышь", item2.get(0).getDescription(), "некорректно отработал метод");
+        assertEquals(1, item2.size(), "метод отработал некорректно");
+        assertEquals("игровая мышь", item2.get(0).getDescription(), "метод отработал некорректно");
     }
 
     @Test
@@ -240,19 +240,19 @@ class ItemServiceImplTest {
 
         List<Item> actualItemList = (List<Item>) itemService.getAllItemsByText(text, from, size);
         assertFalse(actualItemList.isEmpty());
-        assertEquals(1, actualItemList.size(), "некорректно отработал метод");
-        assertEquals(item, actualItemList.get(0), "некорректно отработал метод");
+        assertEquals(1, actualItemList.size(), "метод отработал некорректно");
+        assertEquals(item, actualItemList.get(0), "метод отработал некорректно");
     }
 
     @Test
     void createCommentValid() {
         CommentDtoRequest commentDtoInput = CommentDtoRequest.builder()
-                .text("отличная вещь, очень удобная в хозяйстве")
+                .text("отличная вещь")
                 .build();
         User user1 = User.builder()
                 .id(2L)
-                .email("alexs@yandex.ru")
-                .name("alexs")
+                .email("new@yandex.ru")
+                .name("new")
                 .build();
         LocalDateTime dateTime = LocalDateTime.now();
         Booking booking = Booking.builder()
@@ -276,14 +276,14 @@ class ItemServiceImplTest {
 
         Comment newComment = itemService.createComment(commentDtoInput, user.getId(), item.getId());
         assertFalse(newComment == null);
-        assertEquals(commentDtoInput.getText(), newComment.getText(), "некорректно отработал метод");
+        assertEquals(commentDtoInput.getText(), newComment.getText(), "метод отработал некорректно");
     }
 
     @Test
     void createCommentUserIdNotValidException() {
         Long itemId = 1L;
         CommentDtoRequest commentDtoInput = CommentDtoRequest.builder()
-                .text("отличная вещь, очень удобная в хозяйстве")
+                .text("отличная вещь")
                 .build();
 
         when(userService.getUserById(user.getId())).thenThrow(DataNotFoundException.class);
@@ -294,7 +294,7 @@ class ItemServiceImplTest {
     @Test
     void createCommentItemIdNotValidException() {
         CommentDtoRequest commentDtoInput = CommentDtoRequest.builder()
-                .text("отличная вещь, очень удобная в хозяйстве")
+                .text("отличная вещь")
                 .build();
 
         when(userService.getUserById(user.getId())).thenReturn(user);

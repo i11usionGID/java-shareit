@@ -51,19 +51,19 @@ class ItemControllerTest {
     void setUp() {
         itemRequest = ItemRequest.builder()
                 .id(1L)
-                .description("запрос")
+                .description("new request")
                 .created(LocalDateTime.now())
                 .requester(new User())
                 .build();
         user = User.builder()
                 .id(1L)
-                .email("alex@yandex.ru")
-                .name("alex")
+                .email("new@yandex.ru")
+                .name("new")
                 .build();
         item = Item.builder()
                 .id(1L)
-                .name("стул")
-                .description("удобный стул")
+                .name("ноутбук")
+                .description("новый ноутбук")
                 .available(true)
                 .owner(user)
                 .request(itemRequest)
@@ -73,7 +73,7 @@ class ItemControllerTest {
 
     @SneakyThrows
     @Test
-    void addNewItem_whenInputValueValid_thenReturnSaveItemDto() {
+    void createItemValid() {
         when(itemService.createItem(any(ItemDto.class), anyLong())).thenReturn(item);
 
         mockMvc.perform(post("/items")
@@ -89,7 +89,7 @@ class ItemControllerTest {
 
     @SneakyThrows
     @Test
-    void addItem_whenInputValueNotValid_thenReturnThrows() {
+    void createItemNotValidException() {
         Item item1 = Item.builder()
                 .id(2L)
                 .name("")
@@ -110,7 +110,7 @@ class ItemControllerTest {
 
     @SneakyThrows
     @Test
-    void updateItem_whenInputValueValid_thenReturnUpdateItemDto() {
+    void updateItemValid() {
         when(itemService.updateItem(itemDto, user.getId(),  item.getId())).thenReturn(item);
         mockMvc.perform(patch("/items/{id}", item.getId())
                         .contentType(MediaType.APPLICATION_JSON)
@@ -125,7 +125,7 @@ class ItemControllerTest {
 
     @SneakyThrows
     @Test
-    void getItemById_whenInputValueValid_thenReturnItem() {
+    void getItemByIdValid() {
         BookingShort last = BookingShort.builder()
                 .id(1L)
                 .bookerId(2L)
@@ -150,7 +150,7 @@ class ItemControllerTest {
 
     @SneakyThrows
     @Test
-    void searchItem_whenInputValueValid_thenReturnListItemSearsh() {
+    void getAllItemsByTextValid() {
         List<Item> itemList = List.of(item);
 
         when(itemService.getAllItemsByText(anyString(), anyInt(), anyInt())).thenReturn(itemList);
@@ -169,7 +169,7 @@ class ItemControllerTest {
 
     @SneakyThrows
     @Test
-    void getUserAllItems() {
+    void getAllItemsByUser() {
         BookingShort last = BookingShort.builder()
                 .id(1L)
                 .bookerId(2L)
@@ -199,7 +199,7 @@ class ItemControllerTest {
 
     @SneakyThrows
     @Test
-    void addComment_whenInputValueValid_thenReturnSaveComment() {
+    void createCommentValid() {
         CommentDtoRequest commentDtoInput = CommentDtoRequest.builder()
                 .text("comment")
                 .build();
@@ -222,7 +222,7 @@ class ItemControllerTest {
 
     @SneakyThrows
     @Test
-    void addComment_whenInputValueNotValid_thenReturnThrows() {
+    void createCommentNotValidException() {
         CommentDtoRequest commentDtoInput = CommentDtoRequest.builder()
                 .text("")
                 .build();
