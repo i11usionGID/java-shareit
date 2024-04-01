@@ -9,6 +9,8 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemWithBookingAndComments;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
@@ -44,13 +46,17 @@ public class ItemController {
     }
 
     @GetMapping
-    public Collection<ItemWithBookingAndComments> getAllItemsByUser(@RequestHeader(HEADER) Long userId) {
-        return service.getAllItemsByUser(userId);
+    public Collection<ItemWithBookingAndComments> getAllItemsByUser(@RequestHeader(HEADER) Long userId,
+                                                                    @RequestParam(defaultValue = "1") @Min(1) Integer from,
+                                                                    @RequestParam(defaultValue = "20") @Min(1) @Max(20) Integer size) {
+        return service.getAllItemsByUser(userId, from, size);
     }
 
     @GetMapping("/search")
-    public Collection<ItemDto> getAllItemsByText(@RequestParam(name = "text") String text) {
-        return service.getAllItemsByText(text).stream()
+    public Collection<ItemDto> getAllItemsByText(@RequestParam(name = "text") String text,
+                                                 @RequestParam(defaultValue = "1") @Min(1) Integer from,
+                                                 @RequestParam(defaultValue = "20") @Min(1) @Max(20) Integer size) {
+        return service.getAllItemsByText(text, from, size).stream()
                 .map(s1 -> ItemMapper.toDto(s1))
                 .collect(Collectors.toList());
     }

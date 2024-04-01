@@ -1,6 +1,8 @@
 package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingMapper;
@@ -13,6 +15,8 @@ import ru.practicum.shareit.exceptions.WrongOwnerException;
 import ru.practicum.shareit.item.comment.*;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemWithBookingAndComments;
+import ru.practicum.shareit.request.ItemRequest;
+import ru.practicum.shareit.request.ItemRequestRepository;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserService;
 
@@ -31,13 +35,22 @@ public class ItemServiceImpl implements ItemService {
     private final UserService userService;
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
+    private final ItemRequestRepository itemRequestRepository;
 
     @Override
     @Transactional
     public Item createItem(ItemDto itemDto, Long userId) {
         checkUserExist(userId);
         User user = userService.getUserById(userId);
-        Item item = ItemMapper.toItem(itemDto, user);
+        Item item;
+        if (itemDto.getRequestId() != null) {
+            ItemRequest itemRequest = itemRequestRepository.findById(itemDto.getRequestId())
+                    .orElseThrow(() -> new DataNotFoundException("Запроса с таким id = "
+                            + itemDto.getRequestId() + "  не существует"));
+            item = ItemMapper.toItem(itemDto, user, itemRequest);
+        } else {
+            item = ItemMapper.toItemWithId(itemDto, user, itemDto.getId());
+        }
         return repository.save(item);
     }
 
@@ -73,23 +86,22 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Collection<ItemWithBookingAndComments> getAllItemsByUser(Long userId) {
+    public Collection<ItemWithBookingAndComments> getAllItemsByUser(Long userId, Integer from, Integer size) {
         checkUserExist(userId);
-        return repository.findAllByOwner(userService.getUserById(userId)).stream()
+        Pageable pageable = PageRequest.of(from / size, size);
+        return repository.findAllByOwnerId(userId, pageable)
+                .stream()
                 .map(item -> convertItemToItemWithBookingAndComments(item, userId))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public Collection<Item> getAllItemsByText(String text) {
+    public Collection<Item> getAllItemsByText(String text, Integer from, Integer size) {
         if (text.isEmpty()) {
             return new ArrayList<>();
         }
-        return repository.findAll().stream()
-                .filter(item -> (item.getName().toLowerCase().contains(text.toLowerCase()) ||
-                        item.getDescription().toLowerCase().contains(text.toLowerCase())))
-                .filter(item -> (item.getAvailable()).equals(true))
-                .collect(Collectors.toList());
+        Pageable pageable = PageRequest.of(from / size, size);
+        return repository.searchWithPagination(text, pageable);
     }
 
     @Override

@@ -22,7 +22,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public User updateUser(User user) {
-        checkUserExist(user.getId());
+        //checkUserExist(user.getId());
         User oldUser = getUserById(user.getId());
         if (user.getName() == null) {
             user.setName(oldUser.getName());
