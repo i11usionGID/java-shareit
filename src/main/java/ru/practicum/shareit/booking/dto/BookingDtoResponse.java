@@ -15,11 +15,7 @@ import java.time.LocalDateTime;
 @Builder
 public class BookingDtoResponse {
     private Long id;
-    @NotNull
-    @FutureOrPresent
     private LocalDateTime start;
-    @NotNull
-    @Future
     private LocalDateTime end;
     private Status status;
     private UserDto booker;

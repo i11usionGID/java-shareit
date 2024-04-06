@@ -13,6 +13,7 @@ import ru.practicum.shareit.request.dto.ItemRequestDtoResponse;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,6 +27,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     private final ItemRepository itemRepository;
 
     @Override
+    @Transactional
     public ItemRequest createRequest(Long userId, ItemRequestDto request, LocalDateTime time) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new DataNotFoundException("Пользователя с таким id = " + userId + "  не существует"));
